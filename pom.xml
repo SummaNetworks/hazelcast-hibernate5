@@ -18,7 +18,7 @@
     <name>hazelcast-hibernate5</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-hibernate5-parent</artifactId>
-    <version>1.3.3-SNAPSHOT</version>
+    <version>1.3.3-SUMMA-0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Hazelcast In-Memory DataGrid Hibernate Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -88,6 +88,9 @@
         <javassist.version>3.18.1-GA</javassist.version>
         <hibernate.core.version>5.0.12.Final</hibernate.core.version>
         <bytebuddy.version>1.6.12</bytebuddy.version>
+
+        <project.scm.id>github-summa</project.scm.id>
+        <gpg.skip>true</gpg.skip>
     </properties>
 
     <licenses>
@@ -98,9 +101,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git://github.com/hazelcast/hazelcast-hibernate5.git</connection>
-        <developerConnection>scm:git:git@github.com:hazelcast/hazelcast-hibernate5.git</developerConnection>
-        <url>https://github.com/hazelcast/hazelcast/</url>
+        <connection>scm:git:https://github.com/SummaNetworks/hazelcast-hibernate5/</connection>
+        <developerConnection>scm:git:https://github.com/SummaNetworks/hazelcast-hibernate5/</developerConnection>
+        <url>https://github.com/SummaNetworks/hazelcast-hibernate5/</url>
     </scm>
     <developers>
         <developer>
@@ -118,8 +121,20 @@
             <name>bryan turner</name>
             <email>bturner@atlassian.com</email>
         </developer>
+        <developer>
+            <id>ajimenez</id>
+            <name>antonio jimenez</name>
+            <email>antonio.jimenez@summanetworks.com</email>
+        </developer>
     </developers>
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -225,14 +240,14 @@
 
     <distributionManagement>
         <repository>
-            <id>release-repository</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>onevox</id>
+            <name>Onevox Repository</name>
+            <url>dav:https://devel.onevox.io/repository</url>
         </repository>
         <snapshotRepository>
-            <id>snapshot-repository</id>
-            <name>Maven2 Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <uniqueVersion>false</uniqueVersion>
+            <id>snapshot</id>
+            <name>Onevox Repository</name>
+            <url>dav:https://devel.onevox.io/repository-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -492,17 +507,17 @@
                         </executions>
                     </plugin>
 
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.3</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>release-repository</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
+<!--                    <plugin>-->
+<!--                        <groupId>org.sonatype.plugins</groupId>-->
+<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
+<!--                        <version>1.6.3</version>-->
+<!--                        <extensions>true</extensions>-->
+<!--                        <configuration>-->
+<!--                            <serverId>release-repository</serverId>-->
+<!--                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
+<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
                 </plugins>
             </build>
         </profile>
