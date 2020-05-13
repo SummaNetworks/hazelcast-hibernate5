@@ -21,6 +21,10 @@
  Ej:
  >mvn -B -Dtag=1.3.3-SUMMA-0.1.0 release:prepare -DreleaseVersion=1.3.3-SUMMA-0.1.0 -DdevelopmentVersion=1.3.3-SUMMA-0.1.1-SNASHOT -Darguments="-Dmaven.test.skip=true"
  
+ And then:
+ >mvn release:perform -Darguments="-Dgpg.skip -Dmaven.test.skip=true -Dmaven.javadoc.skip=true"
+
+ 
  
 # Añadir en el setting.xml
 ```
