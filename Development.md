@@ -41,5 +41,5 @@
 ```
 
 
-#If you have to repeat, delete tag just created:
->git tag -d TagName && git push origin :TagName
+#If you have to repeat, delete tag just created in summa remote repository. If it is called origin, change:
+>git tag -d TagName && git push summa :TagName
