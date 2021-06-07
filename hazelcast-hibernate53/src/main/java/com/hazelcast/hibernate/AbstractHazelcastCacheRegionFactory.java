@@ -16,6 +16,9 @@
 
 package com.hazelcast.hibernate;
 
+import java.util.Map;
+import java.util.Properties;
+
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.hibernate.instance.DefaultHazelcastInstanceFactory;
 import com.hazelcast.hibernate.instance.IHazelcastInstanceFactory;
@@ -35,9 +38,6 @@ import org.hibernate.cache.spi.support.DomainDataStorageAccess;
 import org.hibernate.cache.spi.support.RegionFactoryTemplate;
 import org.hibernate.cache.spi.support.StorageAccess;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Simple RegionFactory implementation to return Hazelcast based local Region implementations
@@ -152,6 +152,7 @@ public abstract class AbstractHazelcastCacheRegionFactory extends RegionFactoryT
             instance = instanceLoader.loadInstance();
         }
         cleanupService = new CleanupService(instance.getName());
+        log.info("Started up using Hazelcast instance: " + instance.getName());
     }
 
     @SuppressWarnings("Duplicates")

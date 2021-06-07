@@ -67,6 +67,8 @@
                                         <exclude>com/hazelcast/hibernate/serialization/Hibernate5CacheEntrySerializerHook.java</exclude>
                                         <exclude>com/hazelcast/hibernate/serialization/Hibernate5CacheEntrySerializer.java</exclude>
                                         <exclude>com/hazelcast/hibernate/serialization/Hibernate51CacheEntrySerializer.java</exclude>
+                                        <exclude>com/hazelcast/hibernate/jmx/LocalCacheRegionStatus.java</exclude>
+                                        <exclude>com/hazelcast/hibernate/jmx/LocalCacheRegionStatusMBean.java</exclude>
                                     </excludes>
                                 </resource>
                             </resources>

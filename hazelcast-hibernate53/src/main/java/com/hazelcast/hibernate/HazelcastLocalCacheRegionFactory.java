@@ -16,13 +16,19 @@
 
 package com.hazelcast.hibernate;
 
+import java.util.Map;
+
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.hibernate.jmx.LocalCacheRegionStatus;
 import com.hazelcast.hibernate.local.LocalRegionCache;
 import com.hazelcast.hibernate.local.TimestampsRegionCache;
+import com.hazelcast.logging.Logger;
 import com.hazelcast.util.Clock;
+import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.cfg.spi.DomainDataRegionConfig;
 import org.hibernate.cache.spi.CacheKeysFactory;
 import org.hibernate.cache.spi.support.RegionNameQualifier;
+import org.hibernate.cache.spi.support.StorageAccess;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 
 /**
@@ -30,7 +36,12 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
  */
 public class HazelcastLocalCacheRegionFactory extends AbstractHazelcastCacheRegionFactory {
 
+    public static final String JMX_NAME_KEY = "hazelcast.local.region.jmx.name";
+
+    LocalCacheRegionStatus mbean = null;
+
     public HazelcastLocalCacheRegionFactory() {
+        Logger.getLogger(HazelcastLocalCacheRegionFactory.class).info("Creating factory.");
     }
 
     public HazelcastLocalCacheRegionFactory(final CacheKeysFactory cacheKeysFactory) {
@@ -39,6 +50,24 @@ public class HazelcastLocalCacheRegionFactory extends AbstractHazelcastCacheRegi
 
     public HazelcastLocalCacheRegionFactory(final HazelcastInstance instance) {
         super(instance);
+    }
+
+    protected void prepareForUse(final SessionFactoryOptions settings, final Map configValues) {
+        super.prepareForUse(settings, configValues);
+        //After prepare for use, do some extra steps:
+        String jmxName = (String) configValues.get(JMX_NAME_KEY);
+        if(jmxName != null){
+            mbean = new LocalCacheRegionStatus(jmxName);
+            mbean.registerMBean();
+        }
+    }
+
+    @Override
+    protected void releaseFromUse() {
+        super.releaseFromUse();
+        if(mbean != null){
+            mbean.unregisterMBean();
+        }
     }
 
     @Override
@@ -55,7 +84,22 @@ public class HazelcastLocalCacheRegionFactory extends AbstractHazelcastCacheRegi
 
         final LocalRegionCache regionCache = new LocalRegionCache(this, qualifiedRegionName, instance, regionConfig);
         cleanupService.registerCache(regionCache);
+        if(mbean != null){
+            mbean.registerCache(qualifiedRegionName, regionCache);
+        }
         return regionCache;
+    }
+
+    @Override
+    protected StorageAccess createQueryResultsRegionStorageAccess(final String regionName,
+                                                                  final SessionFactoryImplementor sessionFactory) {
+        HazelcastStorageAccessImpl storageAccess = (HazelcastStorageAccessImpl)
+                super.createQueryResultsRegionStorageAccess(regionName, sessionFactory);
+        if(mbean != null){
+            storageAccess.getDelegate();
+            mbean.registerQueryCache(storageAccess.getDelegate().getName(), storageAccess.getDelegate());
+        }
+        return storageAccess;
     }
 
     @Override
