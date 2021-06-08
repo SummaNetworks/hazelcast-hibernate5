@@ -100,15 +100,15 @@ public interface LocalCacheRegionStatusMBean {
     /**
      * Clean the given local region and return the element that it contains at the moment of remove.
      *
-     * @param localRegion
+     * @param entityRegion
      * @return
      */
-    long evictCacheOfRegion(String localRegion);
+    long evictCacheOfRegion(String entityRegion);
 
     /**
-     * Clean all the cache for the queries. Use with caution.
+     * Clean the cache for the queries of given cache region.
      *
      * @return the number of results removed.
      */
-    long evictCacheOfAllQueries();
+    long evictCacheOfQueryRegion(String queryRegion);
 }

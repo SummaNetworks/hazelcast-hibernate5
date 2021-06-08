@@ -305,12 +305,15 @@ public class LocalCacheRegionStatus implements LocalCacheRegionStatusMBean {
      * TODO: Could be good to add a refresh time
      */
     @Override
-    public long evictCacheOfAllQueries() {
-        log.fine("cleanAllQueryCache()");
-        long count = 0;
-        for (RegionCache rc : localQueriesRegionCacheMap.values()) {
-            count += rc.getElementCountInMemory();
-            rc.evictData();
+    public long evictCacheOfQueryRegion(String queryRegion) {
+        log.fine("evictCacheOfQueryRegion() "+queryRegion);
+        long count = -1;
+        if(queryRegion != null) {
+            RegionCache rc = localQueriesRegionCacheMap.get(queryRegion);
+            if(rc != null) {
+                count = rc.getElementCountInMemory();
+                rc.evictData();
+            }
         }
         return count;
     }
