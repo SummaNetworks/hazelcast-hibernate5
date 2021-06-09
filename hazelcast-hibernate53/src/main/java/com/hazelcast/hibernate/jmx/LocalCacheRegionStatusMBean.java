@@ -108,6 +108,7 @@ public interface LocalCacheRegionStatusMBean {
     /**
      * Clean the cache for the queries of given cache region.
      *
+     * @param queryRegion the region name of query cache.
      * @return the number of results removed.
      */
     long evictCacheOfQueryRegion(String queryRegion);
