@@ -16,6 +16,14 @@
 
 package com.hazelcast.hibernate.local;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import com.hazelcast.config.MapConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.ITopic;
@@ -37,14 +45,6 @@ import org.hibernate.cache.cfg.spi.EntityDataCachingConfig;
 import org.hibernate.cache.spi.RegionFactory;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Local only {@link RegionCache} implementation based on a topic to distribute cache updates.
@@ -219,11 +219,19 @@ public class LocalRegionCache implements RegionCache {
 
         final boolean limitSize = maxSize > 0 && maxSize != Integer.MAX_VALUE;
         if (limitSize || timeToLive > 0) {
+            int orgSize = cache.size();
             final List<EvictionEntry> entries = searchEvictableEntries(timeToLive, limitSize);
             final int diff = cache.size() - maxSize;
             final int evictionRate = calculateEvictionRate(diff, maxSize);
             if (evictionRate > 0 && entries != null) {
                 evictEntries(entries, evictionRate);
+            }
+
+            if(log.isFineEnabled()) {
+                int cleaned = orgSize - cache.size();
+                if (cleaned > 0) {
+                    log.fine("Cleaned [" + (orgSize - cache.size()) + "] entries from " + this.getName());
+                }
             }
         }
     }
